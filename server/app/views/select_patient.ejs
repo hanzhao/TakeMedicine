@@ -1,0 +1,7 @@
+<% include header %>
+<legend>选择病人</legend>
+<% patients.forEach(function (patient) { %>
+  <a href="/doctor/select/<%= patient._id %>" class="am-btn am-btn-success"><i class="am-icon-user-plus"></i> 选择病人</a> <span style="margin-left: 30px;"><%= patient.username %></span>
+  <hr>
+<% }); %>
+<% include footer %>

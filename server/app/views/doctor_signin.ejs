@@ -1,0 +1,21 @@
+<% include header %>
+<form class="am-form" method="POST" action="#">
+  <fieldset>
+    <legend>医生登录</legend>
+    <div class="am-form-group">
+      <label for="username">真实姓名</label>
+      <input type="text" id="username" name="username" placeholder="输入真实姓名" required>
+    </div>
+    <div class="am-form-group">
+      <label for="password">密码</label>
+      <input type="password" id="password" name="password" placeholder="输入用户密码" required>
+    </div>
+    <div class="am-form-group">
+      <a href="/doctor/signup">没有帐号？点击注册</a>
+    </div>
+    <div class="am-form-group">
+      <button type="submit" class="am-btn am-btn-success am-btn-block">点击登录</button>
+    </div>
+  </fieldset>
+</form>
+<% include footer %>

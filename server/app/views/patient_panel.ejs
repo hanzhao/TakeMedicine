@@ -1,0 +1,70 @@
+<% include header %>
+<legend>主任医师：<%= doctor.username %> <a id="toggle" href="#" class="am-icon-btn am-icon-comment-o am-secondary" style="position: fixed; top: 5px; right: 20px;"></a></legend>
+<form class="am-form" role="form" method="POST" action="#" style="height: 0px; display: none;">
+  <div class="am-form-group am-form-icon">
+    <i class="am-icon-bar-chart"></i>
+    <input type="text" name="temperature" class="am-form-field" placeholder=" 今日体温">
+  </div>
+  <div class="am-form-group am-form-icon">
+    <i class="am-icon-tasks"></i>
+    <input type="text" name="pressure" class="am-form-field" placeholder=" 今日血压">
+  </div>
+  <div class="am-form-group">
+    <textarea name="content" class="am-form-field" rows=4></textarea>
+  </div>
+  <div class="am-form-group">
+    <button type="submit" class="am-btn am-btn-success am-btn-block"><i class="am-icon-upload"></i> 汇报身体状况</button>
+  </div>
+  <hr>
+</form>
+<% talks.forEach(function (talk) { %>
+  <article class="am-comment<%= talk.from._id.toString() == patient._id.toString() ? ' am-comment-flip' : '' %>">
+    <a href="#">
+      <img src="/img/avatar.png" alt="" class="am-comment-avatar" width="48px" height="48px" />
+    </a>
+    <div class="am-comment-main">
+      <header class="am-comment-hd">
+        <div class="am-comment-meta">
+          <a href="#" class="am-comment-author"><%= talk.from.username %></a>
+          于 <time datetime="<%= talk.createdAt %>"><%= moment(talk.createdAt).format('YYYY-MM-DD hh:mm:ss') %></time>
+        </div>
+      </header>
+      <div class="am-comment-bd">
+        <% if (talk.temperature != null || talk.pressure != null) {%>
+          <blockquote>体温：<%= talk.temperature || '未知' %> 血压：<%= talk.pressure || '未知' %></blockquote>
+        <% } %>
+        <%= talk.content %>
+      </div>
+    </div>
+  </article>
+<% }) %>
+<script type="text/coffeescript">
+  $ ->
+    toggle = false
+    height = $('form').css('height', 'auto').height()
+    $('form').css('height', '0px')
+    $('#toggle').click (e) ->
+      if toggle
+        toggle = false
+        $('form').animate
+          height: '0px'
+        , 1000, ->
+          $('form').hide()
+        $('#toggle').removeClass 'am-icon-times'
+        $('#toggle').removeClass 'am-danger'
+        $('#toggle').addClass 'am-icon-comment-o'
+        $('#toggle').addClass 'am-secondary'
+        e.preventDefault()
+      else
+        toggle = true
+        $('form').show ->
+          $('form').animate
+            height: height
+          , 1000
+        $('#toggle').removeClass 'am-icon-comment-o'
+        $('#toggle').removeClass 'am-secondary'
+        $('#toggle').addClass 'am-icon-times'
+        $('#toggle').addClass 'am-danger'
+        e.preventDefault()
+</script>
+<% include footer %>

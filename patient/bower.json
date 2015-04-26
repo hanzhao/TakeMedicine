@@ -1,0 +1,18 @@
+{
+  "name": "patient",
+  "version": "1.0.0",
+  "authors": [
+    "Magica <i@0u0.moe>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.3"
+  }
+}
