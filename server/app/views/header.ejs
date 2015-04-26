@@ -14,6 +14,8 @@
   <% } %>
 </head>
 <body>
+  <a id="backward" href="#" class="am-icon-btn am-icon-arrow-left am-secondary" style="position: fixed; right: 5px; bottom: 5px; z-index: 1000;"></a>
+  <a id="refresh" href="#" class="am-icon-btn am-icon-repeat am-warning" style="position: fixed; right: 5px; bottom: 55px; z-index: 1000;"></a>
   <div class="am-modal am-modal-no-btn" tabindex="-1" id="message-modal">
   <div class="am-modal-dialog">
     <div class="am-modal-hd">消息提示
@@ -24,34 +26,36 @@
   </div>
 </div>
 <script type="text/coffeescript">
-  getQueryString = (name) ->
-    reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
-    r = window.location.search.substr(1).match(reg);
-    if r?
-      return unescape(r[2]);
-    else
-      return null;
   $ ->
-    msg = null
-    switch getQueryString('msg')
-      when 'SIGNINOK'
-        msg = '登录成功'
-      when 'SIGNUPOK'
-        msg = '注册成功'
-      when 'SIGNINERR'
-        msg = '登录失败'
-      when 'SIGNUPERR'
-        msg = '注册失败'
-      when 'SELECTDOCTOR'
-        msg = '先选择一个个人医生'
-      when 'SELECTDOCTOROK'
-        msg = '选择医生成功，开始健康之旅吧'
-      when 'SENDTALKOK'
-        msg = '发送信息成功'
-      when 'SENDTALKERR'
-        msg = '发送信息失败'
+    msg = <%- typeof(msg) != 'undefined' && msg.toString() != '' ? "'" + msg + "'" : 'null' %>
     if msg?
+      arr = msg.split(',')
+      switch arr[arr.length - 1]
+        when 'SIGNINOK'
+          msg = '登录成功'
+        when 'SIGNUPOK'
+          msg = '注册成功'
+        when 'SIGNINERR'
+          msg = '登录失败'
+        when 'SIGNUPERR'
+          msg = '注册失败'
+        when 'SELECTDOCTOR'
+          msg = '先选择一个个人医生'
+        when 'SELECTDOCTOROK'
+          msg = '选择医生成功，开始健康之旅吧'
+        when 'SENDTALKOK'
+          msg = '发送信息成功'
+        when 'SENDTALKERR'
+          msg = '发送信息失败'
       modal = $('#message-modal')
       $('#message-body').text msg
       modal.modal()
+  $ ->
+    $('#backward').click (e) ->
+      history.back()
+      e.preventDefault()
+    $('#refresh').click (e) ->
+      window.location.reload()
+      e.preventDefault()
 </script>
+<div class="container">

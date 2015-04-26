@@ -14,6 +14,7 @@ module.exports = (app) ->
 router.get '/signup', (req, res, next) ->
   res.render 'patient_signup',
     title: '用户注册'
+    msg: req.flash 'msg'
 
 router.post '/signup', async (req, res, next) ->
   try
@@ -23,13 +24,16 @@ router.post '/signup', async (req, res, next) ->
       type: 'patient'
     yield patient.saveAsync()
     req.session.user = patient
-    res.redirect '/patient/index?msg=SIGNUPOK'
+    req.flash 'msg', 'SIGNUPOK'
+    res.redirect '/patient/index'
   catch e
-    res.redirect '/patient/signup?msg=SIGNUPERR'
+    req.flash 'msg', 'SIGNUPERR'
+    res.redirect '/patient/signup'
 
 router.get '/signin', (req, res, next) ->
   res.render 'patient_signin',
     title: '用户登录'
+    msg: req.flash 'msg'
 
 router.post '/signin', async (req, res, next) ->
   try
@@ -39,16 +43,19 @@ router.post '/signin', async (req, res, next) ->
     .execAsync()
     throw new Error("Invalid account") unless patient?
     req.session.user = patient
-    res.redirect '/patient/index?msg=SIGNINOK'
+    req.flash 'msg', 'SIGNINOK'
+    res.redirect '/patient/index'
   catch e
-    res.redirect '/patient/signin?msg=SIGNINERR'
+    req.flash 'msg', 'SIGNINERR'
+    res.redirect '/patient/signin'
 
 router.get '/index', async (req, res, next) ->
   try
     patient = yield User.findById(req.session.user._id).populate('doctor').execAsync()
     doctor = patient.doctor
     if !doctor?
-      return res.redirect '/patient/select?msg=SELECTDOCTOR'
+      req.flash 'msg', 'SELECTDOCTOR'
+      return res.redirect '/patient/select'
     talks = yield Talk.find().or([{from: patient}, {to: patient}]).sort('-createdAt').populate('from').populate('to').execAsync()
     return res.render 'patient_panel',
       title: '咨询面板'
@@ -56,6 +63,7 @@ router.get '/index', async (req, res, next) ->
       doctor: doctor
       talks: talks
       moment: moment
+      msg: req.flash 'msg'
   catch e
     next e
 
@@ -71,9 +79,11 @@ router.post '/index', async (req, res, next) ->
       content: req.body.content
       createdAt: Date.now()
     yield talk.saveAsync()
-    res.redirect '/patient/index?msg=SENDTALKOK'
+    req.flash 'msg', 'SENDTALKOK'
+    res.redirect '/patient/index'
   catch e
-    res.redirect '/patient/index?msg=SENDTALKERR'
+    req.flash 'msg', 'SENDTALKERR'
+    res.redirect '/patient/index'
 
 router.get '/select', async (req, res, next) ->
   try
@@ -84,6 +94,7 @@ router.get '/select', async (req, res, next) ->
       title: '选择医生'
       user: req.session.user
       doctors: doctors
+      msg: req.flash 'msg'
   catch e
     next e
 
@@ -96,6 +107,7 @@ router.get '/select/:id', async (req, res, next) ->
     yield user.saveAsync()
     yield doctor.saveAsync()
     req.session.user = user
-    res.redirect '/patient/index?msg=SELECTDOCTOROK'
+    req.flash 'msg', 'SELECTDOCTOROK'
+    res.redirect '/patient/index'
   catch e
     next e

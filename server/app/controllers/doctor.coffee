@@ -13,7 +13,8 @@ module.exports = (app) ->
 
 router.get '/signup', (req, res, next) ->
   res.render 'doctor_signup',
-    title: '用户注册'
+    title: '医生注册'
+    msg: req.flash 'msg'
 
 router.post '/signup', async (req, res, next) ->
   try
@@ -23,13 +24,16 @@ router.post '/signup', async (req, res, next) ->
       type: 'doctor'
     yield doctor.saveAsync()
     req.session.user = doctor
-    res.redirect '/doctor/index?msg=SIGNUPOK'
+    req.flash 'msg', 'SIGNUPOK'
+    res.redirect '/doctor/index'
   catch e
-    res.redirect '/doctor/signup?msg=SIGNUPERR'
+    req.flash 'msg', 'SIGNUPERR'
+    res.redirect '/doctor/signup'
 
 router.get '/signin', (req, res, next) ->
   res.render 'doctor_signin',
-    title: '用户登录'
+    title: '医生登录'
+    msg: req.flash 'msg'
 
 router.post '/signin', async (req, res, next) ->
   try
@@ -39,9 +43,11 @@ router.post '/signin', async (req, res, next) ->
     .execAsync()
     throw new Error("Invalid account") unless doctor?
     req.session.user = doctor
-    res.redirect '/doctor/index?msg=SIGNINOK'
+    req.flash 'msg', 'SIGNINOK'
+    res.redirect '/doctor/index'
   catch e
-    res.redirect '/doctor/signin?msg=SIGNINERR'
+    req.flash 'msg', 'SIGNINERR'
+    res.redirect '/doctor/signin'
 
 router.get '/index', async (req, res, next) ->
   try
@@ -51,6 +57,7 @@ router.get '/index', async (req, res, next) ->
     res.render 'select_patient',
       title: '选择病人'
       patients: patients
+      msg: req.flash 'msg'
   catch e
     next e
 
@@ -65,6 +72,7 @@ router.get '/select/:id', async (req, res, next) ->
       doctor: doctor
       talks: talks
       moment: moment
+      msg: req.flash 'msg'
   catch e
     next e
 
@@ -78,6 +86,8 @@ router.post '/select/:id', async (req, res, next) ->
       content: req.body.content
       createdAt: Date.now()
     yield talk.saveAsync()
-    res.redirect "/doctor/select/#{patient._id}?msg=SENDTALKOK"
+    req.flash 'msg', 'SENDTALKOK'
+    res.redirect "/doctor/select/#{patient._id}"
   catch e
-    res.redirect "/doctor/select/#{patient._id}?msg=SENDTALKERR"
+    req.flash 'msg', 'SENDTALKERR'
+    res.redirect "/doctor/select/#{patient._id}"

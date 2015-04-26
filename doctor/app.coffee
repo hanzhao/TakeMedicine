@@ -8,8 +8,8 @@ app.on 'window-all-closed', ->
 
 app.on 'ready', ->
   mainWindow = new BrowserWindow
-    height: 600
-    width: 400
+    height: 700
+    width: 500
   # mainWindow.openDevTools
   #   detach: true
   mainWindow.loadUrl "http://localhost:3000/doctor/signin"

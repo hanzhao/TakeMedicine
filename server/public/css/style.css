@@ -2,14 +2,14 @@ blockquote {
   font-family: Ubuntu, 'WenQuanYi Micro Hei', 'Microsoft YaHei' !important;
 }
 
-body {
-  padding: 20px;
-}
-
 a {
   color: #00B7FF;
 }
 
 .am-comment {
   margin-bottom: 5px;
+}
+
+.container {
+  padding: 20px;
 }

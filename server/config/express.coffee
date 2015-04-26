@@ -8,6 +8,7 @@ bodyParser = require 'body-parser'
 compress = require 'compression'
 methodOverride = require 'method-override'
 session = require 'express-session'
+flash = require 'connect-flash'
 mongoose = require 'mongoose'
 MongoStore = require('connect-mongo')(session)
 
@@ -16,7 +17,7 @@ module.exports = (app, config) ->
   app.set 'view engine', 'ejs'
 
   env = process.env.NODE_ENV || 'development'
-  app.locals.ENV = env;
+  app.locals.ENV = env
   app.locals.ENV_DEVELOPMENT = env == 'development'
 
   # app.use(favicon(config.root + '/public/img/favicon.ico'));
@@ -35,10 +36,11 @@ module.exports = (app, config) ->
     saveUninitialized: true
     store: new MongoStore
       mongooseConnection: mongoose.connection
+  app.use flash()
 
   controllers = glob.sync config.root + '/app/controllers/**/*.coffee'
   controllers.forEach (controller) ->
-    require(controller)(app);
+    require(controller)(app)
 
   # catch 404 and forward to error handler
   app.use (req, res, next) ->
